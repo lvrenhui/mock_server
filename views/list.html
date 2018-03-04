@@ -1,0 +1,96 @@
+<html>
+
+<head>
+  <link type="text/css" rel="stylesheet" href="/static/css/bootstrapv3.min.css">
+  <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/bootstrap-paginator.min.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#page").bootstrapPaginator({
+        currentPage: '{{.Page.PageNo}}',
+        totalPages: '{{.Page.TotalPage}}',
+        bootstrapMajorVersion: 3,
+        size: "small",
+        onPageClicked: function (e, originalEvent, type, page) {
+          window.location.href = "/config/list?p=" + page
+        }
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <div style="width:80%;margin: 0 auto;">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">path</th>
+          <th scope="col">data</th>
+          <th scope="col">tip</th>
+          <th scope="col">check</th>
+          <th scope="col">option</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Page.List}}
+        <tr>
+          <td>{{.Id}}</td>
+          <td>{{.Path}}</td>
+          <td>{{.Data}}</td>
+          <td>{{.Tip}}</td>
+          <td>
+            <input class="form-check-input" type="checkbox" id="gridCheck" {{if .Check}}checked{{end}} onchange="onCheck(this,{{.Id}});">
+          </td>
+          <td>
+            <a href="javascript:mod({{.Id}})">mod</a>&nbsp;&nbsp;
+            <a href="javascript:del({{.Id}})">del</a>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+
+    <ul id="page"></ul>
+
+    <a href="/config/add" style="font-size:24px;display:block;">Add </a>
+  </div>
+
+  <script lang="javascript">
+    function del(id) {
+      r = window.confirm("Warning: Confirm Delete ?");
+      if (r == true) {
+
+        $.post("/config/del", {
+          id: id
+        }, function (res) {
+          if (res["status"]) {
+            window.location.href = "/config/list";
+          } else {
+            alert(res["info"]);
+          }
+        });
+
+      }
+    }
+
+    function mod(id) {
+      window.location.href = "/config/mod?id=" + id;
+    }
+
+    function onCheck(obj, id) {
+      var checked = obj.checked;
+      var v = checked ? 1 : 0;
+      $.post("/config/mod_check", {
+        id: id,
+        check: v
+      }, function (res) {
+        if (res["status"] == false) {
+          alert(res["info"]);
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

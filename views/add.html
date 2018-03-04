@@ -1,0 +1,75 @@
+<head>
+  <link type="text/css" rel="stylesheet" href="/static/css/bootstrapv3.min.css">
+  <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div style="width:60%;margin:0 auto;">
+    <form id="form1" method="POST" onsubmit="return doSubmit();">
+      <div class="form-group">
+        <label for="Path">Api Path</label>
+        <input type="text" class="form-control" id="Path" name="Path" placeholder="/func/method">
+      </div>
+      <div class="form-group">
+        <label for="Tip">Api Tip</label>
+        <input type="text" class="form-control" id="Tip" name="Tip" placeholder="test pkg list">
+      </div>
+      <div class="form-group">
+        <label for="Data">Api Data</label>
+        <textarea class="form-control" id="Data" name="Data" rows="10"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Add </button>
+
+    </form>
+  </div>
+
+  <script lang="javascript">
+    $().ready(function(){
+      {{if .id}}
+        $("#Path").val({{.model.Path}});
+        $("#Data").val({{.model.Data}});
+        $("#Tip").val({{.model.Tip}});
+      {{end}}
+    });
+    
+  function doSubmit(){
+    (function($){
+    $.fn.serializeJson=function(){
+        var serializeObj={};
+        var array=this.serializeArray();
+        // var str=this.serialize();
+        $(array).each(function(){
+            if(serializeObj[this.name]){
+                if($.isArray(serializeObj[this.name])){
+                    serializeObj[this.name].push(this.value);
+                }else{
+                    serializeObj[this.name]=[serializeObj[this.name],this.value];
+                }
+            }else{
+                serializeObj[this.name]=this.value;
+            }
+        });
+        return serializeObj;
+    };
+})(jQuery);
+
+    var data=$("#form1").serializeJson();
+    var isMod= {{if .id}}true{{else}}false{{end}};
+    action="/config/add";
+    if (isMod){
+      data["id"]={{.id}};
+      action="/config/mod";
+    }
+    $.post(action,data,function(res){
+        if (res["status"]){
+          window.location.href="/config/list";
+        }else{
+          alert(res["info"])
+        }
+    });
+    
+    return false;
+  }
+  </script>
+</body>
