@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	m "mock_server/models"
 
 	"github.com/astaxie/beego"
@@ -130,10 +131,16 @@ func (c *MockController) Mock() {
 	uri := c.Ctx.Request.RequestURI
 	data, err := m.GetMock(uri)
 	if err == nil {
-		c.Data["json"] = &data
-		c.ServeJSON()
+		var obj map[string]interface{}
+		if err := json.Unmarshal([]byte(data), &obj); err == nil {
+			c.Data["json"] = &obj
+			c.ServeJSON()
+		} else {
+			c.Rsp(false, "json format error!")
+		}
+
 	} else {
-		c.Rsp(false, err.Error())
+		c.Rsp(false, "get from db error")
 	}
 
 }
