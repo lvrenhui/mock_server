@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"mock_server/controllers"
+	"github.com/lvrenhui/mock_server/controllers"
 
 	"github.com/astaxie/beego"
 )

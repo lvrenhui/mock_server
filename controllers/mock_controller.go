@@ -2,7 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
-	m "mock_server/models"
+
+	m "github.com/lvrenhui/mock_server/models"
 
 	"github.com/astaxie/beego"
 )
@@ -12,6 +13,7 @@ type MockController struct {
 	beego.Controller
 }
 
+//Get ...
 func (c *MockController) Get() {
 	id, _ := c.GetInt("id")
 	var data m.MockData

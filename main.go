@@ -1,10 +1,11 @@
 package main
 
 import (
-	"mock_server/controllers"
-	_ "mock_server/routers"
 	"reflect"
 	"strings"
+
+	"github.com/lvrenhui/mock_server/controllers"
+	_ "github.com/lvrenhui/mock_server/routers"
 
 	"github.com/astaxie/beego/context"
 
